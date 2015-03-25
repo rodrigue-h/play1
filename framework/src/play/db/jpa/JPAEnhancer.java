@@ -1,5 +1,9 @@
 package play.db.jpa;
 
+import java.util.Set;
+
+import play.Logger;
+import play.db.Configuration;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.bytecode.*;
@@ -27,41 +31,57 @@ public class JPAEnhancer extends Enhancer {
 
         AnnotationsAttribute annotation = getAnnotations(ctClass);
         String dbName = JPA.DEFAULT;
+        String dbNameRead = JPA.DEFAULT;
         if (annotation != null) {
             Annotation an = annotation.getAnnotation("javax.persistence.PersistenceUnit");
             if (an != null) {
                 dbName = ((StringMemberValue)an.getMemberValue("name")).getValue();
-           }
+            }
+            Annotation an2 = annotation.getAnnotation("play.db.jpa.ReadSlave");
+            if (an2 != null) {
+                String tempDB = ((StringMemberValue)an2.getMemberValue("name")).getValue();
+
+                Set<String> dBNames = Configuration.getDbNames();
+                for (String str : dBNames) {
+                    if(str.equals(tempDB)){
+                        dbNameRead= tempDB;
+                        break;
+                    }
+                }
+                if(dbNameRead.equals(JPA.DEFAULT)){
+                    Logger.debug("Database : %s not found in configuration", tempDB);
+                }
+            }
         }
       
         String entityName = ctClass.getName();
 
         // count
-        CtMethod count = CtMethod.make("public static long count() { return play.db.jpa.JPQL.instance.count(\"" + dbName + "\", \"" + entityName + "\"); }", ctClass);
+        CtMethod count = CtMethod.make("public static long count() { return play.db.jpa.JPQL.instance.count(\"" + dbNameRead + "\", \"" + entityName + "\"); }", ctClass);
         ctClass.addMethod(count);
 
         // count2
-        CtMethod count2 = CtMethod.make("public static long count(String query, Object[] params) { return play.db.jpa.JPQL.instance.count(\"" + dbName + "\", \"" + entityName + "\", query, params); }", ctClass);
+        CtMethod count2 = CtMethod.make("public static long count(String query, Object[] params) { return play.db.jpa.JPQL.instance.count(\"" + dbNameRead + "\", \"" + entityName + "\", query, params); }", ctClass);
         ctClass.addMethod(count2);
 
         // findAll
-        CtMethod findAll = CtMethod.make("public static java.util.List findAll() { return play.db.jpa.JPQL.instance.findAll(\"" + dbName + "\", \"" + entityName + "\"); }", ctClass);
+        CtMethod findAll = CtMethod.make("public static java.util.List findAll() { return play.db.jpa.JPQL.instance.findAll(\"" + dbNameRead + "\", \"" + entityName + "\"); }", ctClass);
         ctClass.addMethod(findAll);
 
         // findById
-        CtMethod findById = CtMethod.make("public static play.db.jpa.JPABase findById(Object id) { return play.db.jpa.JPQL.instance.findById(\"" + dbName + "\",\"" + entityName + "\", id); }", ctClass);
+        CtMethod findById = CtMethod.make("public static play.db.jpa.JPABase findById(Object id) { return play.db.jpa.JPQL.instance.findById(\"" + dbNameRead + "\",\"" + entityName + "\", id); }", ctClass);
         ctClass.addMethod(findById);
 
         // find
-        CtMethod find = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery find(String query, Object[] params) { return play.db.jpa.JPQL.instance.find(\"" + dbName + "\", \"" + entityName + "\", query, params); }", ctClass);
+        CtMethod find = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery find(String query, Object[] params) { return play.db.jpa.JPQL.instance.find(\"" + dbNameRead + "\", \"" + entityName + "\", query, params); }", ctClass);
         ctClass.addMethod(find);
 
         // find
-        CtMethod find2 = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery find() { return play.db.jpa.JPQL.instance.find(\"" + dbName + "\", \"" + entityName + "\"); }", ctClass);
+        CtMethod find2 = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery find() { return play.db.jpa.JPQL.instance.find(\"" + dbNameRead + "\", \"" + entityName + "\"); }", ctClass);
         ctClass.addMethod(find2);
 
         // all
-        CtMethod all = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery all() { return play.db.jpa.JPQL.instance.all(\"" + dbName + "\", \"" + entityName + "\"); }", ctClass);
+        CtMethod all = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery all() { return play.db.jpa.JPQL.instance.all(\"" + dbNameRead + "\", \"" + entityName + "\"); }", ctClass);
         ctClass.addMethod(all);
 
         // delete
@@ -73,7 +93,7 @@ public class JPAEnhancer extends Enhancer {
         ctClass.addMethod(deleteAll);
 
         // findOneBy
-        CtMethod findOneBy = CtMethod.make("public static play.db.jpa.JPABase findOneBy(String query, Object[] params) { return play.db.jpa.JPQL.instance.findOneBy(\"" + dbName + "\", \"" + entityName + "\", query, params); }", ctClass);
+        CtMethod findOneBy = CtMethod.make("public static play.db.jpa.JPABase findOneBy(String query, Object[] params) { return play.db.jpa.JPQL.instance.findOneBy(\"" + dbNameRead + "\", \"" + entityName + "\", query, params); }", ctClass);
         ctClass.addMethod(findOneBy);
 
         // create
