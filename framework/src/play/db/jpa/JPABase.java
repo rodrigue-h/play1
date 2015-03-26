@@ -31,8 +31,18 @@ public class JPABase implements Serializable, play.db.Model {
    
     public void _save() {
         String dbName = JPA.getDBName(this.getClass());
+        String dbReadName = JPA.getDBReadName(this.getClass());
+        
         if (!em(dbName).contains(this)) {
-            em(dbName).persist(this);
+            if(dbReadName.equals(dbName) || !em(dbReadName).contains(this))
+            {
+                em(dbName).persist(this);
+            }
+            else
+            {
+                em(dbName).merge(this);
+            }
+            
             PlayPlugin.postEvent("JPASupport.objectPersisted", this);
         }
         avoidCascadeSaveLoops.set(new HashSet<JPABase>());

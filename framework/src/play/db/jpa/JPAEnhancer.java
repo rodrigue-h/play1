@@ -1,7 +1,5 @@
 package play.db.jpa;
 
-import java.util.Set;
-
 import play.Logger;
 import play.db.Configuration;
 import javassist.CtClass;
@@ -41,13 +39,8 @@ public class JPAEnhancer extends Enhancer {
             if (an2 != null) {
                 String tempDB = ((StringMemberValue)an2.getMemberValue("name")).getValue();
 
-                Set<String> dBNames = Configuration.getDbNames();
-                for (String str : dBNames) {
-                    if(str.equals(tempDB)){
-                        dbNameRead= tempDB;
-                        break;
-                    }
-                }
+                dbNameRead = JPA.checkDBExists(tempDB) ? tempDB : JPA.DEFAULT;
+
                 if(dbNameRead.equals(JPA.DEFAULT)){
                     Logger.debug("Database : %s not found in configuration", tempDB);
                 }

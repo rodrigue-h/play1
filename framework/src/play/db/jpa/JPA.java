@@ -8,11 +8,13 @@ import play.exceptions.JPAException;
 import play.Play;
 import play.Invoker.*;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
 import javax.persistence.*;
 import play.db.DB;
+import play.db.Configuration;
 import play.Logger;
 import play.libs.F;
 
@@ -203,6 +205,28 @@ public class JPA {
             name = pu.name();
         }
         return name;
+    }
+
+    public static Boolean checkDBExists(String dbName)
+    {
+        Set<String> dBNames = Configuration.getDbNames();
+        for (String str : dBNames) {
+            if(str.equals(dbName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String getDBReadName(Class clazz) {
+        String name = "";
+        ReadSlave pu = (ReadSlave)clazz.getAnnotation(ReadSlave.class);
+        if (pu != null) {
+            name = pu.name();
+            if(JPA.checkDBExists(name))
+                return name;
+        }
+        return JPA.DEFAULT;
     }
 
 
