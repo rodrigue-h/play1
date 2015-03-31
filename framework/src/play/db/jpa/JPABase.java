@@ -33,7 +33,7 @@ public class JPABase implements Serializable, play.db.Model {
     public void _save() {
         String dbName = JPA.getDBName(this.getClass());
         String dbReadName = JPA.getDBReadName(this.getClass());
-        Logger.info("class: %s, defaultDB: %s , readDB: %s", this.getClass().toString(), dbName, dbReadName);
+        
         if (!em(dbName).contains(this)) {
             if(dbReadName.equals(dbName) || !em(dbReadName).contains(this))
             {
