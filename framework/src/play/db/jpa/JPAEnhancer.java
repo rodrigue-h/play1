@@ -73,6 +73,14 @@ public class JPAEnhancer extends Enhancer {
         CtMethod find2 = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery find() { return play.db.jpa.JPQL.instance.find(\"" + dbNameRead + "\", \"" + entityName + "\"); }", ctClass);
         ctClass.addMethod(find2);
 
+        // TunnelBear: findAllTB
+        CtMethod findAllTB = CtMethod.make("public static java.util.List findAllTB(String query, Object[] params) { return play.db.jpa.JPQL.instance.findAllTB(\"" + dbNameRead + "\",\"" + dbName + "\", \"" + entityName + "\", query, params); }", ctClass);
+        ctClass.addMethod(findAllTB);
+
+        // TunnelBear: firstTB
+        CtMethod firstTB = CtMethod.make("public static play.db.jpa.JPABase firstTB(String query, Object[] params) { return play.db.jpa.JPQL.instance.firstTB(\"" + dbNameRead + "\",\"" + dbName + "\", \"" + entityName + "\", query, params); }", ctClass);
+        ctClass.addMethod(firstTB);
+
         // all
         CtMethod all = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery all() { return play.db.jpa.JPQL.instance.all(\"" + dbNameRead + "\", \"" + entityName + "\"); }", ctClass);
         ctClass.addMethod(all);

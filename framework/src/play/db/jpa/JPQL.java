@@ -71,7 +71,6 @@ public class JPQL {
       return find(JPA.DEFAULT, entity, query, params);
     }
 
-
     public JPAQuery find(String dbName, String entity, String query, Object[] params) {
         Query q = em(dbName).createQuery(
                 createFindByQuery(dbName, entity, entity, query, params));
@@ -88,6 +87,36 @@ public class JPQL {
                 createFindByQuery(dbName, entity, entity, null));
         return new JPAQuery(
                 createFindByQuery(dbName, entity, entity, null), bindParameters(q));
+    }
+
+    public JPABase firstTB(String dbNameSlave, String dbNameMaster, String entity, String query, Object[] params) {
+        Query querySlave = em(dbNameSlave).createQuery(createFindByQuery(dbNameSlave, entity, entity, query, params));
+        JPAQuery jpaQuery = new JPAQuery(
+                createFindByQuery(dbNameSlave, entity, entity, query, params), bindParameters(querySlave, params));
+
+        JPABase result = jpaQuery.first();
+        if (result == null && !dbNameSlave.equals(dbNameMaster)) {
+            Query queryMaster = em(dbNameMaster).createQuery(createFindByQuery(dbNameMaster, entity, entity, query, params));
+            JPAQuery jpaQueryMaster = new JPAQuery(
+                createFindByQuery(dbNameMaster, entity, entity, query, params), bindParameters(queryMaster, params));
+            result = jpaQueryMaster.first();
+        }
+        return (JPABase)result;
+    }
+
+    public List findAllTB(String dbNameSlave, String dbNameMaster, String entity, String query, Object[] params) {
+        Query querySlave = em(dbNameSlave).createQuery(createFindByQuery(dbNameSlave, entity, entity, query, params));
+        JPAQuery jpaQuery = new JPAQuery(
+                createFindByQuery(dbNameSlave, entity, entity, query, params), bindParameters(querySlave, params));
+
+        List results = jpaQuery.query.getResultList();
+        if (results.isEmpty() && !dbNameSlave.equals(dbNameMaster)) {
+            Query queryMaster = em(dbNameMaster).createQuery(createFindByQuery(dbNameMaster, entity, entity, query, params));
+            JPAQuery jpaQueryMaster = new JPAQuery(
+                createFindByQuery(dbNameMaster, entity, entity, query, params), bindParameters(queryMaster, params));
+            results = jpaQueryMaster.query.getResultList();
+        }
+        return results;
     }
 
     public JPAQuery all(String entity) {

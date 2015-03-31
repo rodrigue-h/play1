@@ -318,6 +318,27 @@ public class GenericModel extends JPABase {
     }
 
     /**
+     * TunnelBear: Executes a query to find entities from SlaveDB if available then DefaultDB if result is empty
+     * @param query HQL query or shortcut
+     * @param params Params to bind to the query
+     * @return T or null
+     */
+    public static <T extends JPABase> T firstTB(String query, Object... params) {
+        throw new UnsupportedOperationException("Please annotate your JPA model with @javax.persistence.Entity annotation.");
+    }
+
+    /**
+     * TunnelBear: Executes a query to find entities from SlaveDB if available then DefaultDB if result is empty
+     * @param query HQL query or shortcut
+     * @param params Params to bind to the query
+     * @return A List<T>
+     */
+    public static  <T extends JPABase> List<T> findAllTB(String query, Object... params) {
+        throw new UnsupportedOperationException("Please annotate your JPA model with @javax.persistence.Entity annotation.");
+    }
+
+
+    /**
      * Prepare a query to find *all* entities.
      * @return A JPAQuery
      */
