@@ -50,19 +50,19 @@ public class JPAEnhancer extends Enhancer {
         String entityName = ctClass.getName();
 
         // count
-        CtMethod count = CtMethod.make("public static long count() { return play.db.jpa.JPQL.instance.count(\"" + dbNameRead + "\", \"" + entityName + "\"); }", ctClass);
+        CtMethod count = CtMethod.make("public static long count() { return play.db.jpa.JPQL.instance.count(\"" + dbName + "\", \"" + entityName + "\"); }", ctClass);
         ctClass.addMethod(count);
 
         // count2
-        CtMethod count2 = CtMethod.make("public static long count(String query, Object[] params) { return play.db.jpa.JPQL.instance.count(\"" + dbNameRead + "\", \"" + entityName + "\", query, params); }", ctClass);
+        CtMethod count2 = CtMethod.make("public static long count(String query, Object[] params) { return play.db.jpa.JPQL.instance.count(\"" + dbName + "\", \"" + entityName + "\", query, params); }", ctClass);
         ctClass.addMethod(count2);
 
         // findAll
-        CtMethod findAll = CtMethod.make("public static java.util.List findAll() { return play.db.jpa.JPQL.instance.findAll(\"" + dbNameRead + "\", \"" + entityName + "\"); }", ctClass);
+        CtMethod findAll = CtMethod.make("public static java.util.List findAll() { return play.db.jpa.JPQL.instance.findAll(\"" + dbName + "\", \"" + entityName + "\"); }", ctClass);
         ctClass.addMethod(findAll);
 
         // findById
-        CtMethod findById = CtMethod.make("public static play.db.jpa.JPABase findById(Object id) { return play.db.jpa.JPQL.instance.findById(\"" + dbNameRead + "\",\"" + entityName + "\", id); }", ctClass);
+        CtMethod findById = CtMethod.make("public static play.db.jpa.JPABase findById(Object id) { return play.db.jpa.JPQL.instance.findById(\"" + dbName + "\",\"" + entityName + "\", id); }", ctClass);
         ctClass.addMethod(findById);
 
         // find
@@ -70,7 +70,7 @@ public class JPAEnhancer extends Enhancer {
         ctClass.addMethod(find);
 
         // find
-        CtMethod find2 = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery find() { return play.db.jpa.JPQL.instance.find(\"" + dbNameRead + "\", \"" + entityName + "\"); }", ctClass);
+        CtMethod find2 = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery find() { return play.db.jpa.JPQL.instance.find(\"" + dbName + "\", \"" + entityName + "\"); }", ctClass);
         ctClass.addMethod(find2);
 
         // TunnelBear: findAllTB
@@ -82,7 +82,7 @@ public class JPAEnhancer extends Enhancer {
         ctClass.addMethod(firstTB);
 
         // all
-        CtMethod all = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery all() { return play.db.jpa.JPQL.instance.all(\"" + dbNameRead + "\", \"" + entityName + "\"); }", ctClass);
+        CtMethod all = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery all() { return play.db.jpa.JPQL.instance.all(\"" + dbName + "\", \"" + entityName + "\"); }", ctClass);
         ctClass.addMethod(all);
 
         // delete
@@ -94,7 +94,7 @@ public class JPAEnhancer extends Enhancer {
         ctClass.addMethod(deleteAll);
 
         // findOneBy
-        CtMethod findOneBy = CtMethod.make("public static play.db.jpa.JPABase findOneBy(String query, Object[] params) { return play.db.jpa.JPQL.instance.findOneBy(\"" + dbNameRead + "\", \"" + entityName + "\", query, params); }", ctClass);
+        CtMethod findOneBy = CtMethod.make("public static play.db.jpa.JPABase findOneBy(String query, Object[] params) { return play.db.jpa.JPQL.instance.findOneBy(\"" + dbName + "\", \"" + entityName + "\", query, params); }", ctClass);
         ctClass.addMethod(findOneBy);
 
         // create
