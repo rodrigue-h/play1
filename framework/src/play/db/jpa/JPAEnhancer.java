@@ -66,7 +66,7 @@ public class JPAEnhancer extends Enhancer {
         ctClass.addMethod(findById);
 
         // find
-        CtMethod find = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery find(String query, Object[] params) { return play.db.jpa.JPQL.instance.find(\"" + dbNameRead + "\", \"" + entityName + "\", query, params); }", ctClass);
+        CtMethod find = CtMethod.make("public static play.db.jpa.GenericModel.JPAQuery find(String query, Object[] params) { return play.db.jpa.JPQL.instance.find(\"" + dbName + "\", \"" + entityName + "\", query, params); }", ctClass);
         ctClass.addMethod(find);
 
         // find
